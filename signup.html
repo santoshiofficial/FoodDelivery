@@ -1,0 +1,863 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .signup-form {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    }
+
+    .profile-image {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: darkred;
+    }
+
+    a {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="signup-form">
+      <div class="profile-image">
+        <img id="profileImg" src="images/login-animation.gif" alt="Profile Image">
+        <label for="profileImage">
+          <div class="upload-overlay">
+            <p style="text-align: center;">Upload</p>
+          </div>
+        </label>
+        <input type="file" id="profileImage" accept="image/*" class="hidden">
+      </div>
+      <form id="signupForm">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" class="input-field">
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" class="input-field">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="input-field">
+
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" class="input-field">
+          <span id="togglePassword" class="toggle-icon">Show</span>
+        </div>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-container">
+          <input type="password" id="confirmPassword" name="confirmPassword" class="input-field">
+          <span id="toggleConfirmPassword" class="toggle-icon">Show</span>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign up</button>
+      </form>
+      <p style="text-align: center;">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileImageInput = document.getElementById('profileImage');
+      const profileImg = document.getElementById('profileImg');
+      const togglePassword = document.getElementById('togglePassword');
+      const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const signupForm = document.getElementById('signupForm');
+
+      profileImageInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        profileImg.src = base64;
+      });
+
+      togglePassword.addEventListener('click', () => {
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        togglePassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      toggleConfirmPassword.addEventListener('click', () => {
+        const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+        confirmPasswordField.type = type;
+        toggleConfirmPassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(signupForm);
+        const data = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          email: formData.get('email'),
+          password: formData.get('password'),
+          confirmPassword: formData.get('confirmPassword'),
+          image: profileImg.src
+        };
+
+        if (data.password !== data.confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        if (!data.firstName || !data.email || !data.password || !data.confirmPassword) {
+          alert("Please fill out all fields");
+          return;
+        }
+
+        const response = await fetch('http://yourserverdomain.com/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        if (result.alert) {
+          alert("Successfully Register")
+          window.location.href = 'login.html';
+        }
+      });
+
+      function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+
+  </script>
+</body>
+
+</html> -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .signup-form {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: darkred;
+    }
+
+    .verify-btn {
+      padding: 5px 10px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .verify-btn:hover {
+      background-color: darkblue;
+    }
+
+    .verification-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .verified {
+      color: green;
+      margin-left: 10px;
+    }
+
+    a {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="signup-form">
+      <div class="profile-image">
+        <img id="profileImg" src="images/login-animation.gif" alt="Profile Image">
+        <label for="profileImage">
+          <div class="upload-overlay">
+            <p style="text-align: center;">Upload</p>
+          </div>
+        </label>
+        <input type="file" id="profileImage" accept="image/*" class="hidden">
+      </div>
+      <form id="signupForm">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" class="input-field">
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" class="input-field">
+
+        <label for="email">Email</label>
+        <div class="verification-container">
+          <input type="email" id="email" name="email" class="input-field">
+          <button type="button" id="verifyEmailBtn" class="verify-btn">Verify</button>
+          <span id="emailVerified" class="verified hidden">✔️</span>
+        </div>
+        <input type="text" id="emailOtp" placeholder="Enter OTP" class="input-field hidden">
+
+        <label for="mobile">Mobile Number</label>
+        <div class="verification-container">
+          <input type="text" id="mobile" name="mobile" class="input-field">
+          <button type="button" id="verifyMobileBtn" class="verify-btn">Verify</button>
+          <span id="mobileVerified" class="verified hidden">✔️</span>
+        </div>
+        <input type="text" id="mobileOtp" placeholder="Enter OTP" class="input-field hidden">
+
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" class="input-field">
+          <span id="togglePassword" class="toggle-icon">Show</span>
+        </div>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-container">
+          <input type="password" id="confirmPassword" name="confirmPassword" class="input-field">
+          <span id="toggleConfirmPassword" class="toggle-icon">Show</span>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign up</button>
+      </form>
+      <p style="text-align: center;">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileImageInput = document.getElementById('profileImage');
+      const profileImg = document.getElementById('profileImg');
+      const togglePassword = document.getElementById('togglePassword');
+      const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const signupForm = document.getElementById('signupForm');
+      const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+      const emailVerified = document.getElementById('emailVerified');
+      const emailOtp = document.getElementById('emailOtp');
+      const verifyMobileBtn = document.getElementById('verifyMobileBtn');
+      const mobileVerified = document.getElementById('mobileVerified');
+      const mobileOtp = document.getElementById('mobileOtp');
+
+      profileImageInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        profileImg.src = base64;
+      });
+
+      togglePassword.addEventListener('click', () => {
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        togglePassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      toggleConfirmPassword.addEventListener('click', () => {
+        const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+        confirmPasswordField.type = type;
+        toggleConfirmPassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      verifyEmailBtn.addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        if (!email) {
+          alert('Please enter your email');
+          return;
+        }
+        const response = await fetch('http://yourserverdomain.com/send-email-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+        const result = await response.json();
+        if (result.success) {
+          emailOtp.classList.remove('hidden');
+          emailOtp.addEventListener('input', async () => {
+            if (emailOtp.value.length === 6) {
+              const verifyResponse = await fetch('http://yourserverdomain.com/verify-email-otp', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, otp: emailOtp.value })
+              });
+              const verifyResult = await verifyResponse.json();
+              if (verifyResult.success) {
+                emailVerified.classList.remove('hidden');
+                emailOtp.classList.add('hidden');
+                verifyEmailBtn.disabled = true;
+              } else {
+                alert('Invalid OTP');
+              }
+            }
+          });
+        }
+      });
+
+      verifyMobileBtn.addEventListener('click', async () => {
+        const mobile = document.getElementById('mobile').value;
+        if (!mobile) {
+          alert('Please enter your mobile number');
+          return;
+        }
+        const response = await fetch('http://yourserverdomain.com/send-mobile-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ mobile })
+        });
+        const result = await response.json();
+        if (result.success) {
+          mobileOtp.classList.remove('hidden');
+          mobileOtp.addEventListener('input', async () => {
+            if (mobileOtp.value.length === 6) {
+              const verifyResponse = await fetch('http://yourserverdomain.com/verify-mobile-otp', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mobile, otp: mobileOtp.value })
+              });
+              const verifyResult = await verifyResponse.json();
+              if (verifyResult.success) {
+                mobileVerified.classList.remove('hidden');
+                mobileOtp.classList.add('hidden');
+                verifyMobileBtn.disabled = true;
+              } else {
+                alert('Invalid OTP');
+              }
+            }
+          });
+        }
+      });
+
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(signupForm);
+        const data = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          email: formData.get('email'),
+          mobile: formData.get('mobile'),
+          password: formData.get('password'),
+          confirmPassword: formData.get('confirmPassword'),
+          image: profileImg.src
+        };
+
+        if (data.password !== data.confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        if (!data.firstName || !data.email || !data.mobile || !data.password || !data.confirmPassword) {
+          alert("Please fill out all fields");
+          return;
+        }
+
+        if (verifyEmailBtn.disabled === false || verifyMobileBtn.disabled === false) {
+          alert("Please verify your email and mobile number");
+          return;
+        }
+
+        const response = await fetch('http://yourserverdomain.com/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        if (result.success) {
+          window.location.href = 'login.html';
+        }
+      });
+
+      function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  </script>
+</body>
+
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .signup-form {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background-color: darkred;
+    }
+
+    .verify-btn {
+      padding: 5px 10px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .verify-btn:hover {
+      background-color: darkblue;
+    }
+
+    .verification-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .verified {
+      color: green;
+      margin-left: 10px;
+    }
+
+    a {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="signup-form">
+      <div class="profile-image">
+        <img id="profileImg" src="images/login-animation.gif" alt="Profile Image">
+        <label for="profileImage">
+          <div class="upload-overlay">
+            <p style="text-align: center;">Upload</p>
+          </div>
+        </label>
+        <input type="file" id="profileImage" accept="image/*" class="hidden">
+      </div>
+      <form id="signupForm">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" class="input-field">
+
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" class="input-field">
+
+        <label for="email">Email</label>
+        <div class="verification-container">
+          <input type="email" id="email" name="email" class="input-field">
+         <a href="email-otp.html"> <button type="button" id="verifyEmailBtn" class="verify-btn">Verify</button> </a>
+          <span id="emailVerified" class="verified hidden">✔️</span>
+        </div>
+
+        <label for="mobile">Mobile Number</label>
+        <div class="verification-container">
+          <input type="text" id="mobile" name="mobile" class="input-field">
+          <button type="button" id="verifyMobileBtn" class="verify-btn">Verify</button>
+          <span id="mobileVerified" class="verified hidden">✔️</span>
+        </div>
+
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" class="input-field">
+          <span id="togglePassword" class="toggle-icon">Show</span>
+        </div>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-container">
+          <input type="password" id="confirmPassword" name="confirmPassword" class="input-field">
+          <span id="toggleConfirmPassword" class="toggle-icon">Show</span>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign up</button>
+      </form>
+      <p style="text-align: center;">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileImageInput = document.getElementById('profileImage');
+      const profileImg = document.getElementById('profileImg');
+      const togglePassword = document.getElementById('togglePassword');
+      const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const signupForm = document.getElementById('signupForm');
+      const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+      const emailVerified = document.getElementById('emailVerified');
+      const verifyMobileBtn = document.getElementById('verifyMobileBtn');
+      const mobileVerified = document.getElementById('mobileVerified');
+
+      profileImageInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file);
+        profileImg.src = base64;
+      });
+
+      togglePassword.addEventListener('click', () => {
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        togglePassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      toggleConfirmPassword.addEventListener('click', () => {
+        const type = confirmPasswordField.type === 'password' ? 'text' : 'password';
+        confirmPasswordField.type = type;
+        toggleConfirmPassword.textContent = type === 'password' ? 'Show' : 'Hide';
+      });
+
+      verifyEmailBtn.addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        if (!email) {
+          alert('Please enter your email');
+          return;
+        }
+        const response = await fetch('http://yourserverdomain.com/send-email-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        });
+        const result = await response.json();
+        if (result.success) {
+          localStorage.setItem('email', email);
+          window.location.href = 'email-otp.html';
+        } else {
+          alert('Error sending OTP');
+        }
+      });
+
+      verifyMobileBtn.addEventListener('click', async () => {
+        const mobile = document.getElementById('mobile').value;
+        if (!mobile) {
+          alert('Please enter your mobile number');
+          return;
+        }
+        const response = await fetch('http://yourserverdomain.com/send-mobile-otp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ mobile })
+        });
+        const result = await response.json();
+        if (result.success) {
+          localStorage.setItem('mobile', mobile);
+          window.location.href = 'mobile-otp.html';
+        } else {
+          alert('Error sending OTP');
+        }
+      });
+
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(signupForm);
+        const data = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          email: formData.get('email'),
+          mobile: formData.get('mobile'),
+          password: formData.get('password'),
+          confirmPassword: formData.get('confirmPassword'),
+          image: profileImg.src
+        };
+
+        if (data.password !== data.confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+
+        if (!data.firstName || !data.email || !data.mobile || !data.password || !data.confirmPassword) {
+          alert("Please fill out all fields");
+          return;
+        }
+
+        if (!emailVerified.classList.contains('hidden') || !mobileVerified.classList.contains('hidden')) {
+          alert("Please verify your email and mobile number");
+          return;
+        }
+
+        const response = await fetch('http://yourserverdomain.com/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        if (result.success) {
+          window.location.href = 'login.html';
+        }
+      });
+
+      function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
+
