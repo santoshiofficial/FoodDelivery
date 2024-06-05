@@ -64,6 +64,7 @@
             justify-content: space-between;
             flex-wrap: wrap;
             margin-top: 50px;
+            margin-left: 135px;
         }
         .box {
             background-color: white;
@@ -93,6 +94,10 @@
         th {
             background-color: #f2f2f2;
         }
+
+        
+
+
     </style>
 </head>
 
@@ -139,7 +144,7 @@
         <div class="br-logo d-flex justify-content-center align-items-center">
             <a href="index.html"><img src="assets/image/logo1.jpeg" alt="Milko Dashboard Panel" width="80" /></a>
         </div>
-        <ul class="custom-scroll">
+        <ul class="custom-scroll ">
             <li class="active"><a href="index.html" class="waves-effect waves-primary"><i
                         class="la la-dashboard"></i>Dashboard</a></li>
             <li><a href="Addshop.html" class="waves-effect waves-primary"><i class="la la-clone"></i>Add Shop</a></li>
@@ -148,10 +153,10 @@
             <li class="dropdown-sub-menu">
                 <a href="Customers.html" class="waves-effect waves-primary"><i
                             class="la la-users"></i>Customers</a>
-                <!-- <ul class="sub-menu">
+                <ul class="sub-menu">
                         <li><a href="javascript:;"><i class="la la-users"></i>New Customers</a></li>
                         <li><a href="javascript:;"><i class="la la-users"></i>Old Customers</a></li>
-                    </ul> -->
+                    </ul>
             </li>
             <li><a href="Orders.html" class="waves-effect waves-primary"><i
                             class="la la-cart-arrow-down"></i>Orders</a></li>
@@ -159,7 +164,20 @@
                             class="la la-wechat"></i>Messages</a></li>
             <li><a href="Payment.html" class="waves-effect waves-primary"><i class="la la-bank"></i>Payments</a>
             </li>
-            <li><a href="Manageshop.html" class="waves-effect waves-primary"><i class="la la-image"></i>Manage Shop</a></li>
+            <ul class="navbar">
+                <li class="dropdown"><a href="Manageshop.html" class=" dropbtn"><i class="la la-image"></i>Farmer Section</a>
+                    <ul class="dropdown-content">
+                        <li><a href="#">Crop Farmer</a></li>
+                        <li><a href="#">Dairy Farmer</a></li>
+                        <li><a href="#">Poultry Farmer</a></li>
+                        <li><a href="#">Livestock Farmer</a></li>
+                        <li><a href="#">Horticulture Farmer</a></li>
+                        <li><a href="#">Organic Farmer</a></li>
+                        <li><a href="#">Aquaculture Farmer</a></li>
+                        <li><a href="#">Agroforestry Farmer</a></li>
+                    </ul>
+                </li>
+            </ul>
             <li><a href="Setting.html" class="waves-effect waves-primary"><i class="la la-cog"></i>Settings</a>
             <li><a href="../index.html" class="waves-effect waves-primary"><i class="la la-cog"></i>Logout</a>
             </li>
