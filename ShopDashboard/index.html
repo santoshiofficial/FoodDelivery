@@ -95,35 +95,41 @@
             background-color: #f2f2f2;
         }
 
-        /* Main dropdown-sub-menu item */
-.dropdown-sub-menu {
+
+        .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgb(170, 212, 216);
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure the dropdown is above other elements */
+    top: calc(100% + 5px); /* Adjusted to leave a small gap between dropdown and parent */
+    left: 0;
+}
+
+.dropdown-content a {
+    color:white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.show {
+    display: block;
+}
+
+.dropdown-parent {
     position: relative;
 }
-
-/* Main dropdown-sub-menu link */
-.dropdown-sub-menu > a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    background-color: #333; /* Dark background color */
-}
-
-/* Hover effect for main dropdown-sub-menu link */
-.dropdown-sub-menu > a:hover {
-    background-color: #111; /* Darker background color on hover */
-}
-
-/* Submenu */
-.dropdown-sub-menu .sub-menu {
-    display: none;
-    position: abs
-               
-
-}
-        
-
 
     </style>
 </head>
@@ -174,37 +180,45 @@
         <ul class="custom-scroll ">
             <li class="active"><a href="index.html" class="waves-effect waves-primary"><i
                         class="la la-dashboard"></i>Dashboard</a></li>
-            <li><a href="Addshop.html" class="waves-effect waves-primary"><i class="la la-clone"></i>Add Shop</a></li>
+            <!-- <li><a href="Addshop.html" class="waves-effect waves-primary"><i class="la la-clone"></i>Add Shop</a></li> -->
             <!-- <li><a href="javascript:;" class="waves-effect waves-primary"><i
                         class="la la-bullhorn"></i>Campaign</a></li> -->
             <li class="dropdown-sub-menu">
                 <a href="Customers.html" class="waves-effect waves-primary"><i
                             class="la la-users"></i>Customers</a>
-                <ul class="sub-menu">
+                <!-- <ul class="sub-menu">
                         <li><a href="javascript:;"><i class="la la-users"></i>New Customers</a></li>
                         <li><a href="javascript:;"><i class="la la-users"></i>Old Customers</a></li>
-                    </ul>
+                    </ul> -->
             </li>
-            <li><a href="Orders.html" class="waves-effect waves-primary"><i
-                            class="la la-cart-arrow-down"></i>Orders</a></li>
+            <!-- <li><a href="Orders.html" class="waves-effect waves-primary"><i
+                            class="la la-cart-arrow-down"></i>Orders</a></li> -->
+
+
+            <li><a href="Orders.html" class="waves-effect waves-primary"><i class="la la-cart-arrow-down"></i>Orders</a></li>
+                            
+                            
+                            
             <li><a href="Messages.html" class="waves-effect waves-primary"><i
                             class="la la-wechat"></i>Messages</a></li>
             <li><a href="Payment.html" class="waves-effect waves-primary"><i class="la la-bank"></i>Payments</a>
             </li>
-            <ul class="navbar">
-                <li class="dropdown"><a href="Manageshop.html" class=" dropbtn"><i class="la la-image"></i>Farmer Section</a>
-                    <ul class="dropdown-content">
-                        <li><a href="#">Crop Farmer</a></li>
-                        <li><a href="#">Dairy Farmer</a></li>
-                        <li><a href="#">Poultry Farmer</a></li>
-                        <li><a href="#">Livestock Farmer</a></li>
-                        <li><a href="#">Horticulture Farmer</a></li>
-                        <li><a href="#">Organic Farmer</a></li>
-                        <li><a href="#">Aquaculture Farmer</a></li>
-                        <li><a href="#">Agroforestry Farmer</a></li>
+            
+                <!-- <li class="dropdown"><a href="Manageshop.html" class=" dropbtn"></i>Farmer Section</a>
+                    
+                </li> -->
+                <li class="dropdown-parent">
+                    <a href="Manageshop.html" class="waves-effect waves-primary dropbtn" onclick="toggleDropdown(event, 'ordersDropdown')"><i class="la la-image"></i>Farmer Section</a>
+                    <ul id="ordersDropdown" class="dropdown-content">
+                        <li><a href="NewOrders.html" class="waves-effect waves-primary">Order Form</a></li>
+                        <li><a href="PendingOrders.html" class="waves-effect waves-primary">History Orders</a></li>
+                        <li><a href="ProcessedOrders.html" class="waves-effect waves-primary">Farmer Details</a></li>
+                        <li><a href="ShippedOrders.html" class="waves-effect waves-primary">Payment History</a></li>
+                        <li><a href="DeliveredOrders.html" class="waves-effect waves-primary">Cart</a></li>
+                       
                     </ul>
                 </li>
-            </ul>
+            
             <li><a href="Setting.html" class="waves-effect waves-primary"><i class="la la-cog"></i>Settings</a>
             <li><a href="../index.html" class="waves-effect waves-primary"><i class="la la-cog"></i>Logout</a>
             </li>
@@ -557,7 +571,26 @@
     <!-- ########## END: MAIN PANEL ########## -->
 
 </body>
+<script>
+    function toggleDropdown(event, dropdownId) {
+    event.preventDefault();
+    document.getElementById(dropdownId).classList.toggle("show");
+}
 
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+</script>
 <script src="assets/scripts/jquery.min.js"></script>
 <script src="assets/scripts/popper.min.js"></script>
 <script src="assets/scripts/bootstrap-slider.min.js"></script>
